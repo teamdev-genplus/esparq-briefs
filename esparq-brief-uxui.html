@@ -163,8 +163,9 @@
 
 <div class="savebar">
   <span class="status" id="status">Tus respuestas se guardan automáticamente en este navegador</span>
+  <button class="btn ghost" id="printBtn" type="button">Imprimir / PDF</button>
   <button class="btn ghost" id="clearBtn" type="button">Limpiar</button>
-  <button class="btn" id="printBtn" type="button">Imprimir / Guardar PDF</button>
+  <button class="btn" id="sendBtn" type="button">📨 Enviar respuestas</button>
 </div>
 
 <script>
@@ -190,6 +191,32 @@ document.querySelectorAll('input[name="apps"]').forEach(r=>{
 });
 document.getElementById('printBtn').addEventListener('click',()=>window.print());
 document.getElementById('clearBtn').addEventListener('click',()=>{if(confirm('¿Borrar todas las respuestas de este navegador?')){localStorage.removeItem(KEY);location.reload()}});
+
+// condiciones de obra (checkbox decorativos → clickeables)
+store.cond=store.cond||[];
+document.querySelectorAll('.opts span').forEach(s=>{
+  const lbl=s.textContent.trim(),b=s.querySelector('.box');
+  if(store.cond.indexOf(lbl)>=0){s.classList.add('on');if(b)b.style.background='#1E6FE0'}
+  s.style.cursor='pointer';
+  s.addEventListener('click',()=>{const on=s.classList.toggle('on');if(b)b.style.background=on?'#1E6FE0':'';store.cond=store.cond.filter(x=>x!==lbl);if(on)store.cond.push(lbl);save()});
+});
+
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbwuwt6rjg0gnJv1aKsTTJFkdS9jFclHCTvEG5Hy5QdVrix9HJTo658LrQ3RGGXO8n4/exec';
+const APPS_MAP={diario:'Usa apps a diario',justo:'Lo justo',cuesta:'Le cuesta'};
+function readFiles(ids){const t=[];ids.forEach(id=>{const inp=document.getElementById(id);if(inp)[...inp.files].forEach(f=>{t.push(new Promise(res=>{const rd=new FileReader();rd.onload=()=>res({name:f.name,mime:f.type||'application/octet-stream',data:String(rd.result).split(',')[1]});rd.onerror=()=>res(null);rd.readAsDataURL(f)}))})});return Promise.all(t).then(a=>a.filter(Boolean))}
+function overlay(msg,ok){let o=document.getElementById('ovl');if(!o){o=document.createElement('div');o.id='ovl';o.style.cssText='position:fixed;inset:0;z-index:50;background:rgba(6,32,90,.55);display:flex;align-items:center;justify-content:center;padding:20px';document.body.appendChild(o)}o.innerHTML='<div style="background:#fff;border-radius:16px;padding:28px 30px;max-width:420px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3)"><div style="font-size:40px;margin-bottom:8px">'+(ok?'✅':'⚠️')+'</div><div style="font-size:17px;color:#0A2E73;font-weight:800;margin-bottom:6px">'+(ok?'¡Enviado!':'Ups')+'</div><div style="font-size:14px;color:#5b6776;line-height:1.5">'+msg+'</div><button onclick="this.closest(\'#ovl\').remove()" style="margin-top:16px;background:#0A2E73;color:#fff;border:none;font-weight:700;padding:10px 22px;border-radius:9px;cursor:pointer">Cerrar</button></div>'}
+document.getElementById('sendBtn').addEventListener('click',async()=>{
+  const btn=document.getElementById('sendBtn'),lbl=btn.textContent;btn.disabled=true;btn.textContent='Enviando…';
+  try{
+    const f=store.fields||{};
+    const cond=(store.cond||[]).join(', ')+((store.cond||[]).length&&f.q4?' | ':'')+(f.q4||'');
+    const values=[f.q1||'',f.q2||'',f.q3||'',cond,APPS_MAP[(store.radio||{}).apps]||'',f.q6||'',f.q7||'',f.q8||''];
+    const files=await readFiles(['f1','f6']);
+    await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({brief:'uxui',values,files})});
+    overlay('Gracias. Su información llegó a GEN+. Ya puede cerrar esta página.',true);
+  }catch(err){overlay('No se pudo enviar. Revise su conexión e intente de nuevo.',false)}
+  btn.disabled=false;btn.textContent=lbl;
+});
 
 const c=document.getElementById('bg'),x=c.getContext('2d');let w,h2,pts;
 function size(){w=c.width=innerWidth;h2=c.height=innerHeight;init()}
