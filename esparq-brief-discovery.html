@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brief de Discovery — ESPARQ</title>
+<style>
+  :root{
+    --azul:#0A2E73; --azul-d:#06205a; --azul-2:#1E6FE0; --azul-soft:#EAF1FC;
+    --tinta:#1c2533; --gris:#5b6776; --linea:#d8e1ef; --blanco:#fff; --papel:#fbfcff;
+    --r:14px; --maxw:920px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--tinta);background:var(--papel);line-height:1.55;position:relative}
+  #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+  .topbar{position:sticky;top:0;z-index:20;background:linear-gradient(90deg,var(--azul-d),var(--azul));color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 24px;box-shadow:0 6px 22px rgba(6,32,90,.22)}
+  .slot{flex:1;display:flex;align-items:center;min-width:0}
+  .slot.right{justify-content:flex-end}
+  .slot img.logo-img{height:48px;width:auto;max-width:210px;object-fit:contain;display:block;filter:drop-shadow(0 1px 3px rgba(0,0,0,.25))}
+  .logo-text{display:flex;align-items:center;gap:9px;font-weight:800;letter-spacing:.3px;font-size:18px;color:#fff}
+  .logo-text .mark{width:30px;height:30px;border-radius:8px;background:#fff;color:var(--azul);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900}
+  .logo-text .plus{color:#5fa0ff}
+  .logo-text.esparq{flex-direction:column;align-items:flex-end;gap:0;line-height:1.05;font-size:17px}
+  .logo-text.esparq small{font-size:10px;font-weight:600;opacity:.82;letter-spacing:2px}
+  .topbar .tag{position:relative;flex:none;font-size:15px;font-weight:800;letter-spacing:2.5px;opacity:1;text-transform:uppercase;text-align:center;white-space:nowrap;padding-bottom:8px}
+  .topbar .tag::after{content:"";position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:36px;height:2px;border-radius:2px;background:#5fa0ff}
+
+  .wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 22px 100px}
+  header.hero{padding:44px 0 22px;text-align:center}
+  h1{font-size:33px;font-weight:800;color:var(--azul);margin:0 0 10px;letter-spacing:-.5px}
+  .sub{color:var(--gris);font-size:15.5px;max-width:640px;margin:0 auto}
+  .meta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+  .chip{background:var(--azul-soft);color:var(--azul);font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:999px}
+
+  .how{background:#fff;border:1px solid var(--linea);border-radius:var(--r);padding:16px 20px;margin:18px 0 10px;box-shadow:0 6px 18px rgba(20,40,80,.05);font-size:14px;color:var(--gris)}
+  .how b{color:var(--azul)}
+
+  .block{margin-top:34px}
+  .block-head{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+  .block-num{flex:none;width:44px;height:44px;border-radius:12px;background:linear-gradient(160deg,var(--azul),var(--azul-d));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;box-shadow:0 8px 20px rgba(10,46,115,.22)}
+  .block-title{font-size:21px;font-weight:800;color:var(--azul)}
+  .block-desc{color:var(--gris);font-size:13.5px;margin-top:1px}
+
+  .card{background:#fff;border:1px solid var(--linea);border-radius:var(--r);padding:18px 20px;margin-bottom:13px;box-shadow:0 8px 22px rgba(20,40,80,.05)}
+  .q{margin-bottom:18px}
+  .q:last-child{margin-bottom:4px}
+  .q label.qt{display:block;font-size:15px;font-weight:600;color:var(--tinta);margin-bottom:7px}
+  .q .hint{font-size:13px;color:var(--gris);font-weight:400;font-style:italic}
+  textarea,input[type=text]{width:100%;border:1px solid var(--linea);background:var(--papel);border-radius:9px;padding:10px 12px;font:inherit;font-size:14.5px;color:var(--tinta);resize:vertical;transition:border .15s, box-shadow .15s}
+  textarea{min-height:64px}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--azul-2);box-shadow:0 0 0 3px rgba(30,111,224,.13);background:#fff}
+
+  .file{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1.5px dashed var(--azul-2);color:var(--azul);font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;cursor:pointer;transition:background .15s}
+  .file:hover{background:var(--azul-soft)}
+  .file input{display:none}
+  .file-list{font-size:12.5px;color:var(--gris);margin-top:7px}
+
+  .rank-row{display:flex;align-items:center;gap:11px;padding:7px 0;border-bottom:1px dashed var(--linea)}
+  .rank-row input[type=number]{width:54px;flex:none;text-align:center;border:1px solid var(--linea);border-radius:8px;padding:7px;font:inherit;font-size:14px;background:var(--papel)}
+  .rank-row input[type=number]:focus{outline:none;border-color:var(--azul-2);box-shadow:0 0 0 3px rgba(30,111,224,.13)}
+  .rank-row .fn{font-size:14.5px;color:var(--tinta)}
+  .rank-row input[type=text]{width:auto}
+
+  .mtx-wrap{overflow-x:auto;border:1px solid var(--linea);border-radius:11px;margin-top:6px}
+  table.mtx{width:100%;border-collapse:collapse;font-size:13px;min-width:660px}
+  table.mtx th,table.mtx td{border:1px solid var(--linea);padding:8px 9px;text-align:center}
+  table.mtx th{background:var(--azul);color:#fff;font-weight:600;font-size:11.5px;white-space:nowrap}
+  table.mtx th:first-child,table.mtx td:first-child{text-align:left}
+  table.mtx td input[type=text]{border:none;background:transparent;padding:6px 4px;font-size:13.5px;font-weight:600}
+  table.mtx td input[type=text]:focus{box-shadow:none;background:var(--azul-soft);border-radius:6px}
+  table.mtx th input[type=text]{color:#fff;background:rgba(255,255,255,.14);border:none;border-radius:6px;padding:5px 6px;font-size:11px;font-weight:600;width:86px;text-align:center}
+  table.mtx th input[type=text]:focus{outline:none;background:rgba(255,255,255,.28);box-shadow:none}
+  table.mtx th input::placeholder{color:#cdd9f0}
+  table.mtx input[type=checkbox]{width:17px;height:17px;accent-color:var(--azul-2);cursor:pointer}
+  .del{background:none;border:none;color:#c0431f;font-size:15px;cursor:pointer;line-height:1}
+  .delcol{background:none;border:none;color:#bcd0f5;font-size:12px;cursor:pointer;margin-left:3px;vertical-align:middle}
+  .btn-add{margin-top:9px;display:inline-flex;align-items:center;gap:7px;background:var(--azul-soft);color:var(--azul);border:none;font-weight:700;font-size:13px;padding:9px 14px;border-radius:9px;cursor:pointer}
+  .btn-add:hover{background:#dbe8fb}
+
+  .savebar{position:fixed;bottom:0;left:0;right:0;z-index:20;background:#fff;border-top:1px solid var(--linea);box-shadow:0 -6px 22px rgba(20,40,80,.07);display:flex;align-items:center;justify-content:center;gap:14px;padding:11px;flex-wrap:wrap}
+  .savebar .status{font-size:12.5px;color:var(--gris)}
+  .btn{background:var(--azul);color:#fff;border:none;font-weight:700;font-size:14px;padding:11px 20px;border-radius:10px;cursor:pointer;transition:background .15s}
+  .btn:hover{background:var(--azul-d)}
+  .btn.ghost{background:#fff;color:var(--azul);border:1.5px solid var(--linea)}
+
+  footer{margin-top:46px;padding-top:20px;border-top:1px solid var(--linea);text-align:center;color:var(--gris);font-size:12.5px}
+  footer b{color:var(--azul)}
+  @media(max-width:560px){h1{font-size:25px}.block-title{font-size:18px}.wrap{padding:0 14px 120px}.topbar{padding:9px 13px;gap:8px}.slot img.logo-img{height:30px;max-width:130px}.logo-text{font-size:14px}.logo-text.esparq{font-size:13px}.topbar .tag{font-size:10.5px;letter-spacing:1px;padding-bottom:6px}.topbar .tag::after{width:24px}}
+  @media print{#bg,.savebar,.btn-add,.file,.del,.delcol{display:none}.card,.how{box-shadow:none}body{background:#fff}.topbar{position:static}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+
+<div class="topbar">
+  <div class="slot left">
+    <img class="logo-img" src="logo-genplus-white.png" alt="GEN+" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <span class="logo-text" style="display:none"><span class="mark">G</span>GEN<span class="plus">+</span></span>
+  </div>
+  <div class="tag">Brief de Discovery</div>
+  <div class="slot right">
+    <img class="logo-img" src="logo-esparq-white.png" alt="ESPARQ · EOM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <span class="logo-text esparq" style="display:none">ESPARQ<small>EOM</small></span>
+  </div>
+</div>
+
+<form id="brief" class="wrap" autocomplete="off">
+  <header class="hero">
+    <h1>Brief de Discovery</h1>
+    <p class="sub">El objetivo de este brief es registrar su información para conocer el estado actual de sus procesos y, sobre eso, construir su plataforma.</p>
+    <div class="meta-row">
+      <span class="chip">ESPARQ</span>
+      <span class="chip">6 secciones · ~40 min</span>
+      <span class="chip">"No estoy seguro / lo vemos juntos" vale como respuesta</span>
+    </div>
+  </header>
+
+  <div class="how"><b>Cómo funciona:</b> cada sección tiene un <b>área sugerida</b> para participar del llenado. Donde puedan, adjunten su Excel, documento o enlace real.</div>
+
+  <!-- 1 -->
+  <section class="block">
+    <div class="block-head"><div class="block-num">1</div><div><div class="block-title">Metas y prioridades</div><div class="block-desc">Para enfocar la plataforma en lo que más les importa. · Gerencia + Oficina técnica</div></div></div>
+    <div class="card">
+      <div class="q"><label class="qt">1. ¿Cuál sería la <b>métrica clave</b> para medir que esto está funcionando? <span class="hint">el número que les diría "vamos bien"</span></label><textarea data-s id="q1"></textarea></div>
+      <div class="q"><label class="qt">2. ¿Qué es <b>lo que más tiempo les toma</b> hoy en la gestión de sus obras?</label><textarea data-s id="q2"></textarea></div>
+      <div class="q"><label class="qt">3. ¿Qué <b>funcionalidades necesitan más</b>? Ordénenlas del 1 (más importante) en adelante. <span class="hint">Pueden agregar las suyas con el botón.</span></label>
+        <div id="ranks"></div>
+        <div id="customRanks"></div>
+        <button type="button" class="btn-add" id="addFunc">＋ Agregar otra funcionalidad</button>
+        <label class="qt" style="margin-top:14px">…y cuéntennos brevemente <b>por qué la #1</b>:</label><textarea data-s id="q3b"></textarea></div>
+      <div class="q"><label class="qt">4. Si solo pudiéramos resolver <b>UNA cosa en los primeros 2 meses</b>, ¿cuál sería?</label><textarea data-s id="q4"></textarea></div>
+    </div>
+  </section>
+
+  <!-- 2 -->
+  <section class="block">
+    <div class="block-head"><div class="block-num">2</div><div><div class="block-title">Obras y proyectos</div><div class="block-desc">Para conocer cómo están organizadas sus obras. · Oficina técnica + Administración</div></div></div>
+    <div class="card">
+      <div class="q"><label class="qt">5. ¿Cuántas obras manejan y cómo se agrupan? <span class="hint">grupo → empresas → obras; ¿hay obras o etapas dentro de obras más grandes?</span></label><textarea data-s id="q5"></textarea>
+        <label class="file" style="margin-top:9px"><input type="file" id="f5" multiple>📎 Subir listado de obras/empresas (si lo tienen)</label><div class="file-list" id="f5l"></div></div>
+      <div class="q"><label class="qt">6. ¿Qué <b>tipos de obra/proyecto</b> manejan y <b>dónde están</b>? <span class="hint">vivienda masiva, edificios, infraestructura… y ciudades</span></label><textarea data-s id="q6"></textarea></div>
+      <div class="q"><label class="qt">7. ¿Qué <b>información clave</b> manejan por obra y <b>dónde vive hoy</b>? <span class="hint">Excel, WhatsApp, papel, algún sistema</span></label><textarea data-s id="q7"></textarea></div>
+    </div>
+  </section>
+
+  <!-- 3 -->
+  <section class="block">
+    <div class="block-head"><div class="block-num">3</div><div><div class="block-title">Roles y accesos</div><div class="block-desc">Para definir qué puede ver cada rol de su equipo. · Oficina técnica + Gerencia</div></div></div>
+    <div class="card">
+      <div class="q"><label class="qt">8. ¿Qué <b>áreas y roles</b> hay en su empresa y cuántas personas por rol? <span class="hint">gerencia, oficina técnica, residente, capataz, compras, administración…</span></label><textarea data-s id="q8"></textarea>
+        <label class="file" style="margin-top:9px"><input type="file" id="f8" multiple>📎 Subir su organigrama o matriz de roles (si lo tienen)</label><div class="file-list" id="f8l"></div></div>
+      <div class="q"><label class="qt">9. Por cada rol, marquen a qué <b>información debe tener acceso</b>. <span class="hint">Pueden editar los nombres de roles y de columnas, y agregar o quitar los que quieran. Esta tabla define los permisos.</span></label>
+        <div class="mtx-wrap"><table class="mtx">
+          <thead id="mtxhead"></thead>
+          <tbody id="mtxbody"></tbody>
+        </table></div>
+        <div style="display:flex;gap:9px;flex-wrap:wrap"><button type="button" class="btn-add" id="addRole">＋ Agregar rol</button><button type="button" class="btn-add" id="addCol">＋ Agregar columna</button></div></div>
+      <div class="q"><label class="qt">10. ¿Quién <b>decide</b> y quién <b>aprueba</b> en cada obra? <span class="hint">valorizaciones, compras</span></label><textarea data-s id="q10"></textarea></div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="block">
+    <div class="block-head"><div class="block-num">4</div><div><div class="block-title">Cómo se registra en campo</div><div class="block-desc">Para entender cómo se captura el dato en obra hoy. · Oficina técnica / Residente</div></div></div>
+    <div class="card">
+      <div class="q"><label class="qt">11. ¿Cómo se registra la información en la obra hoy? <span class="hint">quién la apunta, con qué, ¿hay señal?</span></label><textarea data-s id="q11"></textarea></div>
+      <div class="q"><label class="qt">12. ¿Qué <b>datos se llenan en obra</b>? <span class="hint">avance por partida, tareo, fotos/evidencias, incidencias — a grandes rasgos</span></label><textarea data-s id="q12"></textarea></div>
+      <div class="q"><label class="qt">13. <b>Suban uno o dos de sus Excel/reportes reales</b> para tener una foto de cómo trabajan.</label>
+        <label class="file"><input type="file" id="f13" multiple>📎 Subir Excel / reportes</label><div class="file-list" id="f13l"></div></div>
+    </div>
+  </section>
+
+  <!-- 5 -->
+  <section class="block">
+    <div class="block-head"><div class="block-num">5</div><div><div class="block-title">Proyecto piloto</div><div class="block-desc">Para elegir con qué obra empezamos. · Gerencia</div></div></div>
+    <div class="card">
+      <div class="q"><label class="qt">14. ¿Con qué obra arrancamos y <b>por qué esa</b>?</label><textarea data-s id="q14"></textarea></div>
+      <div class="q"><label class="qt">15. Datos de esa obra: <b>tamaño, etapa actual, cuánto le queda, modalidad de contrato, nº de partidas aprox.</b></label><textarea data-s id="q15"></textarea></div>
+      <div class="q"><label class="qt">16. ¿Hay <b>señal/internet</b> en esa obra? ¿Quién sería el que <b>carga</b> (residente/capataz) y está dispuesto a probarlo?</label><textarea data-s id="q16"></textarea></div>
+      <div class="q"><label class="qt">17. ¿Cuándo es su <b>próximo corte de valorización</b> en esa obra?</label><input type="text" data-s id="q17" placeholder="Ej.: el 15 y el 30 de cada mes"></div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="block">
+    <div class="block-head"><div class="block-num">6</div><div><div class="block-title">Tecnología</div><div class="block-desc">Para construir sobre lo que ya usan y saber con qué conectar. · Sistemas/TI + Oficina técnica</div></div></div>
+    <div class="card">
+      <div class="q"><label class="qt">18. ¿Qué <b>sistemas/herramientas</b> usan hoy además de Excel/WhatsApp? <span class="hint">ERP, contable, Bildin, Google/Office, Power BI…</span></label><textarea data-s id="q18"></textarea></div>
+      <div class="q"><label class="qt">19. ¿Qué <b>nube o servidores</b> tienen? ¿Hay alguna <b>arquitectura ya montada</b> por su equipo de sistemas? ¿Dónde deben vivir los datos?</label><textarea data-s id="q19"></textarea></div>
+      <div class="q"><label class="qt">20. ¿Usan <b>alguna IA o automatización</b> hoy? <span class="hint">ChatGPT, chatbots, automatizaciones, reportes automáticos</span></label><textarea data-s id="q20"></textarea></div>
+      <div class="q"><label class="qt">21. ¿Tienen <b>área o persona de TI</b>? ¿Con qué sistema hay que conectar <b>sí o sí</b>? ¿Qué soporte daría su TI tras la entrega?</label><textarea data-s id="q21"></textarea></div>
+    </div>
+  </section>
+
+  <footer>
+    <p><b>GEN+</b> · Generative &amp; Optimal Design Solutions &nbsp;·&nbsp; Brief de Discovery para <b>ESPARQ</b></p>
+    <p style="margin-top:5px;color:#9aa6b5">Lo que llenen aquí es la base con la que diseñamos su plataforma. Su información es confidencial.</p>
+  </footer>
+</form>
+
+<div class="savebar">
+  <span class="status" id="status">Tus respuestas se guardan automáticamente en este navegador</span>
+  <button class="btn ghost" id="clearBtn" type="button">Limpiar</button>
+  <button class="btn" id="printBtn" type="button">Imprimir / Guardar PDF</button>
+</div>
+
+<script>
+const KEY='esparq_brief_v2';
+const FUNCS=['Gestión multiobra','Avance de obra','Valorizaciones','Compras','Mano de obra / tareos','Reportes a gerencia','Alertas / predicción','Documentos'];
+const DEFCOLS=['Avance de obra','Costos / márgenes','Tareo y sueldos','Compras','Documentos','¿Aprueba?'];
+let store={fields:{},ranks:{},customFuncs:[],cols:null,roles:null};
+
+try{const s=localStorage.getItem(KEY);if(s)store=JSON.parse(s)}catch(e){}
+store.fields=store.fields||{};store.ranks=store.ranks||{};store.customFuncs=store.customFuncs||[];
+if(!store.cols||!store.cols.length)store.cols=DEFCOLS.slice();
+if(!store.roles||!store.roles.length)store.roles=[
+  {rol:'Gerencia',vals:[1,1,1,1,1,1]},
+  {rol:'Oficina técnica',vals:[1,1,1,1,1,0]},
+  {rol:'Residente',vals:[1,0,1,0,1,0]}
+];
+store.roles.forEach(r=>{r.vals=r.vals||[];while(r.vals.length<store.cols.length)r.vals.push(0);r.vals.length=store.cols.length});
+
+let saveT;
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(store));
+  const st=document.getElementById('status');st.textContent='Guardado ✓';setTimeout(()=>st.textContent='Tus respuestas se guardan automáticamente en este navegador',1400)},250)}
+function esc(s){return (''+(s==null?'':s)).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+
+/* text fields */
+document.querySelectorAll('[data-s]').forEach(el=>{
+  if(store.fields[el.id]!=null)el.value=store.fields[el.id];
+  el.addEventListener('input',()=>{store.fields[el.id]=el.value;save()});
+});
+
+/* ranking: fixed + custom */
+const ranksEl=document.getElementById('ranks');
+FUNCS.forEach((f,i)=>{
+  const row=document.createElement('div');row.className='rank-row';
+  row.innerHTML='<input type="number" min="1" value="'+esc(store.ranks['r'+i])+'" data-r="'+i+'"><span class="fn">'+f+'</span>';
+  ranksEl.appendChild(row);
+});
+ranksEl.querySelectorAll('input[data-r]').forEach(inp=>inp.addEventListener('input',e=>{store.ranks['r'+e.target.dataset.r]=e.target.value;save()}));
+
+const customEl=document.getElementById('customRanks');
+function renderCustom(){
+  customEl.innerHTML='';
+  store.customFuncs.forEach((f,i)=>{
+    const row=document.createElement('div');row.className='rank-row';
+    row.innerHTML='<input type="number" min="1" value="'+esc(f.rank)+'" data-cr="'+i+'"><input type="text" value="'+esc(f.name)+'" data-cn="'+i+'" placeholder="Escribe tu funcionalidad" style="flex:1;font-weight:600"><button type="button" class="del" data-cd="'+i+'" title="Quitar">✕</button>';
+    customEl.appendChild(row);
+  });
+  customEl.querySelectorAll('[data-cr]').forEach(inp=>inp.addEventListener('input',e=>{store.customFuncs[+e.target.dataset.cr].rank=e.target.value;save()}));
+  customEl.querySelectorAll('[data-cn]').forEach(inp=>inp.addEventListener('input',e=>{store.customFuncs[+e.target.dataset.cn].name=e.target.value;save()}));
+  customEl.querySelectorAll('[data-cd]').forEach(b=>b.addEventListener('click',e=>{store.customFuncs.splice(+e.target.dataset.cd,1);save();renderCustom()}));
+}
+document.getElementById('addFunc').addEventListener('click',()=>{store.customFuncs.push({name:'',rank:''});save();renderCustom();customEl.lastElementChild.querySelector('input[type=text]').focus()});
+renderCustom();
+
+/* file inputs */
+['f5','f8','f13'].forEach(id=>{
+  const inp=document.getElementById(id),list=document.getElementById(id+'l');
+  inp.addEventListener('change',()=>{list.textContent=[...inp.files].map(f=>f.name).join(' · ')});
+});
+
+/* matrix: dynamic rows + columns */
+const head=document.getElementById('mtxhead'),mbody=document.getElementById('mtxbody');
+function renderMatrix(){
+  let h='<tr><th>Rol</th>';
+  store.cols.forEach((c,j)=>h+='<th><input type="text" value="'+esc(c)+'" data-c="'+j+'" placeholder="Columna"><button type="button" class="delcol" data-dc="'+j+'" title="Quitar columna">✕</button></th>');
+  h+='<th></th></tr>';head.innerHTML=h;
+  mbody.innerHTML='';
+  store.roles.forEach((r,i)=>{
+    let cells='<td><input type="text" value="'+esc(r.rol)+'" data-i="'+i+'" data-k="rol" placeholder="Nombre del rol"></td>';
+    store.cols.forEach((c,j)=>cells+='<td><input type="checkbox" data-i="'+i+'" data-j="'+j+'" '+(r.vals[j]?'checked':'')+'></td>');
+    cells+='<td><button type="button" class="del" data-del="'+i+'" title="Quitar fila">✕</button></td>';
+    const tr=document.createElement('tr');tr.innerHTML=cells;mbody.appendChild(tr);
+  });
+  head.querySelectorAll('[data-c]').forEach(inp=>inp.addEventListener('input',e=>{store.cols[+e.target.dataset.c]=e.target.value;save()}));
+  head.querySelectorAll('[data-dc]').forEach(b=>b.addEventListener('click',e=>{const j=+e.target.dataset.dc;store.cols.splice(j,1);store.roles.forEach(r=>r.vals.splice(j,1));if(!store.cols.length){store.cols.push('');store.roles.forEach(r=>r.vals.push(0))}save();renderMatrix()}));
+  mbody.querySelectorAll('input[data-k="rol"]').forEach(inp=>inp.addEventListener('input',e=>{store.roles[+e.target.dataset.i].rol=e.target.value;save()}));
+  mbody.querySelectorAll('input[type=checkbox]').forEach(inp=>inp.addEventListener('change',e=>{store.roles[+e.target.dataset.i].vals[+e.target.dataset.j]=e.target.checked?1:0;save()}));
+  mbody.querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',e=>{store.roles.splice(+e.target.dataset.del,1);if(!store.roles.length)store.roles.push({rol:'',vals:store.cols.map(()=>0)});save();renderMatrix()}));
+}
+document.getElementById('addRole').addEventListener('click',()=>{store.roles.push({rol:'',vals:store.cols.map(()=>0)});save();renderMatrix();mbody.lastElementChild.querySelector('input[type=text]').focus()});
+document.getElementById('addCol').addEventListener('click',()=>{store.cols.push('');store.roles.forEach(r=>r.vals.push(0));save();renderMatrix();const ths=head.querySelectorAll('th input[type=text]');if(ths.length)ths[ths.length-1].focus()});
+renderMatrix();
+
+/* buttons */
+document.getElementById('printBtn').addEventListener('click',()=>window.print());
+document.getElementById('clearBtn').addEventListener('click',()=>{if(confirm('¿Borrar todas las respuestas de este navegador?')){localStorage.removeItem(KEY);location.reload()}});
+
+/* soft floating dots */
+const c=document.getElementById('bg'),x=c.getContext('2d');let w,h2,pts;
+function size(){w=c.width=innerWidth;h2=c.height=innerHeight;init()}
+function init(){const n=Math.min(58,Math.round(w*h2/24000));pts=[];for(let i=0;i<n;i++)pts.push({x:Math.random()*w,y:Math.random()*h2,vx:(Math.random()-.5)*.2,vy:(Math.random()-.5)*.2,r:Math.random()*2+1})}
+function draw(){x.clearRect(0,0,w,h2);
+for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<130){x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.strokeStyle='rgba(30,111,224,'+(0.12*(1-d/130))+')';x.stroke()}}
+for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h2)p.vy*=-1;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fillStyle='rgba(10,46,115,0.20)';x.fill()}
+requestAnimationFrame(draw)}
+addEventListener('resize',size);size();draw();
+</script>
+</body>
+</html>
